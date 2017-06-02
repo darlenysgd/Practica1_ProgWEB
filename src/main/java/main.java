@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 public class main {
 
+    //http://itachi.avathartech.com:4567/2017.html
 
 
     public static void main(String[] args) throws IOException {
@@ -71,19 +72,27 @@ public class main {
 
         forms = doc.select("form");
 
-        for(Element element : forms){
+        for(Element element : forms) {
 
-            int n = element.attr("action").length();
-            String action = element.attr("action") ;
 
-            if(Character.toString(element.attr("action").charAt(0)).matches(".")) {
-                action = element.attr("action").substring(1, n);
+            String action = element.absUrl("action"), formMethod = element.attr("method");
+
+            if (formMethod.equals("post")) {
+
+                String userAgent = "Chromium";
+                Document d;
+
+                try {
+
+                    d = Jsoup.connect(action).data("asignatura", "practica1").userAgent(userAgent).post();
+                    String resultado = d.outerHtml();
+                    System.out.println(resultado);
+
+                } catch (Exception e1) {
+                    System.out.println("Error: " + action);
+                }
 
             }
-
-            Document d = Jsoup.connect(url + action).data("asignatura","practica1").post();
-            System.out.println(d);
         }
-
     }
 }
